@@ -6,10 +6,18 @@ API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 
 
 def get_kpis():
-    response = requests.get(f"{API_URL}/api/kpis")
-    response.raise_for_status()
-    return response.json()
+    try:
+        response = requests.get(f"{API_URL}/api/kpis", timeout=30)
 
+        print("STATUS CODE:", response.status_code)
+        print("RESPONSE:", response.text)
+
+        response.raise_for_status()
+        return response.json()
+
+    except requests.exceptions.RequestException as e:
+        print("API ERROR:", repr(e))
+        return None
 
 def get_monthly_revenue():
     response = requests.get(f"{API_URL}/api/monthly-revenue")
